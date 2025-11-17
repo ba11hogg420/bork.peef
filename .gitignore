@@ -42,3 +42,5 @@ next-env.d.ts
 /public/sounds/*.ogg
 !/public/sounds/README.md
 
+
+.vercel

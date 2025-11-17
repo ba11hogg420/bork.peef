@@ -13,12 +13,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert username to email format
-    const email = `${username.toLowerCase()}@blackjack.local`;
+    // Look up the user by username to get their user_id
+    const { data: playerData, error: playerError } = await supabase
+      .from('players')
+      .select('user_id')
+      .eq('username', username)
+      .single();
 
-    // Sign in user
+    if (playerError || !playerData) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
+    }
+
+    // Get the user's email from auth.users
+    const { data: { user: authUser }, error: userError } = await supabase.auth.admin.getUserById(playerData.user_id);
+    
+    if (userError || !authUser || !authUser.email) {
+      return NextResponse.json(
+        { error: 'Invalid username or password' },
+        { status: 401 }
+      );
+    }
+
+    // Sign in with email and password
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
+      email: authUser.email,
       password,
     });
 

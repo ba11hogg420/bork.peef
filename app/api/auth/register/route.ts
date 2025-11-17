@@ -3,19 +3,28 @@ import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password } = await request.json();
+    const { email, username, password } = await request.json();
 
     // Validate input
-    if (!username || !password) {
+    if (!email || !username || !password) {
       return NextResponse.json(
-        { error: 'Username and password are required' },
+        { error: 'Email, username, and password are required' },
         { status: 400 }
       );
     }
 
-    if (username.length < 3 || username.length > 20) {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: 'Username must be between 3 and 20 characters' },
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    if (username.length < 3 || username.length > 30) {
+      return NextResponse.json(
+        { error: 'Username must be between 3 and 30 characters' },
         { status: 400 }
       );
     }
@@ -26,9 +35,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
-    // Create a unique email for username-based auth
-    const email = `${username.toLowerCase()}@blackjack.local`;
 
     // Check if username already exists
     const { data: existingPlayer } = await supabase

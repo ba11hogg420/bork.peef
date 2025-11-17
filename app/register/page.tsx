@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,8 +29,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (username.length < 3) {
-      setError('Username must be at least 3 characters');
+    if (username.length < 3 || username.length > 30) {
+      setError('Username must be 3-30 characters');
       return;
     }
 
@@ -39,7 +40,7 @@ export default function RegisterPage() {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, username, password }),
       });
 
       const data = await response.json();
@@ -85,8 +86,23 @@ export default function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
-              Username
+              Username (for login)
             </label>
             <input
               id="username"
@@ -95,11 +111,11 @@ export default function RegisterPage() {
               onChange={(e) => setUsername(e.target.value)}
               required
               minLength={3}
-              maxLength={20}
+              maxLength={30}
               className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
-              placeholder="Choose a username"
+              placeholder="Choose a unique username"
             />
-            <p className="text-xs text-gray-500 mt-1">3-20 characters</p>
+            <p className="text-xs text-gray-500 mt-1">3-30 characters</p>
           </div>
 
           <div>
