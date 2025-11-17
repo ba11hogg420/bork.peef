@@ -67,7 +67,7 @@ export default function RegisterPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md border border-gray-700"
+        className="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-lg border border-gray-700"
       >
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-yellow-400 mb-2">🃏 Blackjack</h1>
@@ -95,8 +95,9 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400 text-base"
               placeholder="your@email.com"
+              style={{ minWidth: '100%' }}
             />
           </div>
 
@@ -112,8 +113,9 @@ export default function RegisterPage() {
               required
               minLength={3}
               maxLength={30}
-              className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400 text-base"
               placeholder="Choose a unique username"
+              style={{ minWidth: '100%' }}
             />
             <p className="text-xs text-gray-500 mt-1">3-30 characters</p>
           </div>
@@ -129,7 +131,7 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400 text-base"
               placeholder="Choose a password"
             />
             <p className="text-xs text-gray-500 mt-1">At least 6 characters</p>
@@ -145,7 +147,7 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
+              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400 text-base"
               placeholder="Confirm your password"
             />
           </div>
