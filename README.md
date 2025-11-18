@@ -1,173 +1,73 @@
-# 🃏 Blackjack Web App
+# Wallet Authentication API
 
-Production-ready two-deck blackjack game with real-time leaderboard, built with Next.js 14, TypeScript, Tailwind CSS, and Supabase.
+## Security Features
 
-## Features
+### 1. Rate Limiting
+- **10 requests per minute** per IP address
+- Prevents brute force attacks and abuse
+- Returns 429 status code when limit exceeded
 
-**Game:** Two-deck blackjack • Hit/Stand/Double/Split/Insurance • Dealer stands soft 17 • 3:2 blackjack • 2:1 insurance • $1,000 start • $5 min bet • Auto-save game state
+### 2. Signature Verification
+- Uses `viem` library for cryptographic verification
+- Validates that the message was signed by the wallet address
+- Prevents impersonation attacks
 
-**UI:** Framer Motion animations • Howler.js sounds • Mobile responsive • Dark casino theme • Realistic poker chips
+### 3. Timestamp Validation
+- Messages expire after **5 minutes**
+- Prevents replay attacks
+- Validates timestamp is not in the future
 
-**Backend:** Supabase Auth • PostgreSQL + RLS • Real-time leaderboard • Player stats tracking
+### 4. Nonce Verification
+- Requires UUID format nonce
+- Prevents message reuse
+- Should be unique per authentication attempt
 
-## Quick Start
+### 5. Input Validation
+- Wallet address: Must match Ethereum address format (0x + 40 hex chars)
+- Username: 3-30 characters, alphanumeric + underscores only
+- Prevents SQL injection and XSS attacks
 
-### Prerequisites
+### 6. Secure Message Format
+The signed message should include:
+```
+Sign this message to authenticate with Blackjack Game.
 
-Node.js 18+, Supabase account (free tier), Vercel account (optional)
-
-### Setup
-
-**1. Install dependencies:**
-```bash
-npm install
+Wallet: {walletAddress}
+Timestamp: {timestamp}
+Nonce: {nonce}
 ```
 
-**2. Setup Supabase:**
+## Usage
 
-- Create project at [supabase.com](https://supabase.com)
-- Go to SQL Editor → Copy/paste `supabase-schema.sql` → Execute
-- Go to Settings → API → Copy Project URL and anon key
+### Client-Side (Example)
+```typescript
+import { signMessage } from 'wagmi/actions';
 
-**3. Configure environment:**
+const timestamp = Date.now().toString();
+const nonce = crypto.randomUUID();
+const message = `Sign this message to authenticate with Blackjack Game.\n\nWallet: ${address}\nTimestamp: ${timestamp}\nNonce: ${nonce}`;
 
-Create `.env.local`:
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+const signature = await signMessage({ message });
+
+const response = await fetch('/api/auth/wallet', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    walletAddress: address,
+    signature,
+    message,
+    timestamp,
+    nonce,
+    username: newUsername // Only for new users
+  })
+});
 ```
 
-**4. Add sound files (optional):**
+## Production Recommendations
 
-Download 5 MP3s from [freesound.org](https://freesound.org) and place in `/public/sounds/`:
-- `card-deal.mp3` - Card swoosh sound
-- `chip-clink.mp3` - Poker chips sound  
-- `win.mp3` - Cash register/cha-ching
-- `loss.mp3` - Buzzer sound
-- `casino-ambience.mp3` - Background music
-
-See `/public/sounds/README.md` for details.
-
-**5. Run:**
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000)
-
-## Deployment
-
-**Vercel (recommended):**
-1. Push to GitHub
-2. Import repo at [vercel.com](https://vercel.com)
-3. Add environment variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Deploy
-
-**Or via CLI:**
-```bash
-npm install -g vercel
-vercel
-```
-
-## Game Rules
-
-Two 52-card decks (104 total) • Dealer stands soft 17 • Blackjack pays 3:2 • Insurance pays 2:1 • Split pairs • Double on first two cards • $5 min / bankroll max • $1,000 starting
-
-## 🏗️ Project Structure
-
-```
-├── app/
-│   ├── api/
-│   │   ├── auth/
-│   │   │   ├── login/route.ts
-│   │   │   └── register/route.ts
-│   │   └── leaderboard/route.ts
-│   ├── game/page.tsx
-│   ├── login/page.tsx
-│   ├── register/page.tsx
-│   ├── page.tsx
-│   ├── layout.tsx
-│   └── globals.css
-├── components/
-│   └── game/
-│       ├── BlackjackTable.tsx
-│       ├── Card.tsx
-│       ├── ChipSelector.tsx
-│       └── Leaderboard.tsx
-├── lib/
-│   ├── gameLogic.ts
-│   ├── localStorage.ts
-│   ├── soundManager.ts
-│   ├── supabase.ts
-│   └── types.ts
-├── public/
-│   └── sounds/
-│       ├── card-deal.mp3
-│       ├── chip-clink.mp3
-│       ├── win.mp3
-│       ├── loss.mp3
-│       ├── casino-ambience.mp3
-│       └── README.md
-├── supabase-schema.sql
-├── vercel.json
-├── .env.local.example
-├── package.json
-└── README.md
-```
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Real-time**: Supabase Realtime
-- **Animations**: Framer Motion
-- **Audio**: Howler.js
-- **Deployment**: Vercel
-
-## 🔒 Security Features
-
-- Row Level Security (RLS) on all database tables
-- Server-side validation for all game actions
-- Secure authentication with Supabase Auth
-- Environment variables for sensitive data
-- No client-side manipulation of game outcomes
-
-## 🎨 Design Features
-
-- Dark casino theme with #0f172a background
-- Green felt table aesthetic
-- Animated card dealing with 150ms stagger
-- Card flip animations (300ms)
-- Win effects (green glow)
-- Bust effects (red shake)
-- Realistic poker chip designs
-- Mobile-responsive layout
-- Smooth transitions and hover effects
-
-## 📱 Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Troubleshooting
-
-**Database errors:** Verify Supabase URL/keys in `.env.local`, ensure schema was executed, check RLS policies enabled
-
-**Sounds not playing:** Check files in `/public/sounds/`, click unmute button, check browser console
-
-**Build errors:** Delete `.next` folder and rebuild, check TypeScript errors with `npm run build`
-
-**Login fails:** Clear localStorage, verify database setup, check API keys correct
-
-## Tech Stack
-
-Next.js 14 • TypeScript • Tailwind CSS • Supabase (PostgreSQL + Auth + Realtime) • Framer Motion • Howler.js
-
-## License
-
-MIT License - Open source
+1. **Use Redis for Rate Limiting**: Replace in-memory Map with Redis for distributed systems
+2. **Add Nonce Tracking**: Store used nonces in database to prevent reuse
+3. **Implement IP Whitelisting**: For administrative access
+4. **Add Monitoring**: Track authentication attempts and failures
+5. **Enable CORS**: Restrict to your frontend domain only
+6. **Add Logging**: Log authentication events for audit trail (without sensitive data)
