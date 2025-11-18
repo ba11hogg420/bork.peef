@@ -15,9 +15,6 @@
     "silent": false,
     "autoJobCancelation": true
   },
-  "checks": {
-    "maxDuration": 300
-  },
   "headers": [
     {
       "source": "/(.*)",
