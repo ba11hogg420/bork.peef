@@ -58,13 +58,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Get player profile
-    const { data: playerData, error: playerError } = await supabase
+    const { data: playerProfile, error: profileError } = await supabase
       .from('players')
       .select('*')
       .eq('user_id', authData.user.id)
       .single();
 
-    if (playerError || !playerData) {
+    if (profileError || !playerProfile) {
       return NextResponse.json(
         { error: 'Player profile not found' },
         { status: 404 }
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       user: authData.user,
-      player: playerData,
+      player: playerProfile,
       session: authData.session,
     });
 
