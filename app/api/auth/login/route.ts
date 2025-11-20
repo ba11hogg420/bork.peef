@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Look up the user by username to get their user_id
-    const { data: playerData, error: playerError } = await supabase
+    const { data: playerData, error: playerError } = await supabaseAdmin
       .from('players')
       .select('user_id')
       .eq('username', username)
@@ -28,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the user's email from auth.users
-    const { data: { user: authUser }, error: userError } = await supabase.auth.admin.getUserById(playerData.user_id);
+    const { data: { user: authUser }, error: userError } = await supabaseAdmin.auth.admin.getUserById(playerData.user_id);
     
     if (userError || !authUser || !authUser.email) {
       return NextResponse.json(
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get player profile
-    const { data: playerProfile, error: profileError } = await supabase
+    const { data: playerProfile, error: profileError } = await supabaseAdmin
       .from('players')
       .select('*')
       .eq('user_id', authData.user.id)

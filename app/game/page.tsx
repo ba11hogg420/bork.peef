@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import BlackjackTable from '@/components/game/BlackjackTable';
 import Leaderboard from '@/components/game/Leaderboard';
 import type { Player, LeaderboardEntry } from '@/lib/types';
 import { soundManager } from '@/lib/soundManager';
-import { supabase } from '@/lib/supabase';
 import { loadSoundPreference, saveSoundPreference } from '@/lib/localStorage';
 
 export default function GamePage() {
@@ -47,32 +46,7 @@ export default function GamePage() {
     }
   }, [router]);
 
-  useEffect(() => {
-    // Fetch initial leaderboard
-    fetchLeaderboard();
-
-    // Subscribe to real-time updates
-    const channel = supabase
-      .channel('leaderboard-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'players',
-        },
-        () => {
-          fetchLeaderboard();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const fetchLeaderboard = async () => {
+  const fetchLeaderboard = useCallback(async () => {
     try {
       const response = await fetch('/api/leaderboard?limit=10');
       const data = await response.json();
@@ -80,7 +54,13 @@ export default function GamePage() {
     } catch (error) {
       console.error('Failed to fetch leaderboard:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchLeaderboard();
+    const interval = setInterval(fetchLeaderboard, 15_000);
+    return () => clearInterval(interval);
+  }, [fetchLeaderboard]);
 
   const handleBankrollUpdate = (newBankroll: number) => {
     if (player) {

@@ -55,10 +55,8 @@ CREATE POLICY "Users can insert own player data"
     ON players FOR INSERT
     WITH CHECK (auth.uid() = user_id);
 
--- Public can read all players for leaderboard (no sensitive data exposed)
-CREATE POLICY "Public can read players for leaderboard"
-    ON players FOR SELECT
-    USING (true);
+-- Public leaderboard access is handled via the server-only API layer to prevent
+-- exposing wallet addresses or internal identifiers.
 
 -- Game history policies
 -- Users can read their own game history

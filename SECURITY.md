@@ -61,6 +61,17 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your-project-id
 - ✅ Use different keys for development and production
 - ❌ Never expose service role keys to the client
 
+### Credential Rotation Runbook
+1. **Supabase**
+   - Create new anon/public API key and a new service role key in the Supabase dashboard.
+   - Update `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY` in Vercel + local `.env` files.
+   - Redeploy the app, verify connections, then revoke the old keys in Supabase > Settings > API.
+2. **WalletConnect**
+   - Generate a new project in <https://cloud.walletconnect.com> with the same domain allow-list.
+   - Replace `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` values, redeploy, and delete the previous project ID to invalidate it.
+3. **Repository Hygiene**
+   - If secrets were ever committed (e.g., `.env.local`), purge them from git history (`git filter-repo`) and invalidate the exposed credentials before merging.
+
 ## Database Security Checklist
 
 ### Before Production Deployment

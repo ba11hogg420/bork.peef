@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if username already exists
-    const { data: existingPlayer } = await supabase
+    const { data: existingPlayer } = await supabaseAdmin
       .from('players')
       .select('username')
       .eq('username', username)
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sign up user with admin API to auto-confirm and bypass email verification
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
       email_confirm: true, // Auto-confirm email - no verification needed
@@ -82,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create player profile with starting bankroll
-    const { data: playerData, error: playerError } = await supabase
+    const { data: playerData, error: playerError } = await supabaseAdmin
       .from('players')
       .insert({
         user_id: authData.user.id,
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest) {
 
     if (playerError) {
       // If player creation fails, delete the auth user
-      await supabase.auth.admin.deleteUser(authData.user.id);
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
       return NextResponse.json(
         { error: 'Failed to create player profile' },
         { status: 500 }
