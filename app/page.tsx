@@ -15,26 +15,8 @@ export default function HomePage() {
     }
   }, [router]);
 
-  const handleGuestPlay = () => {
-    // Create guest session
-    const guestSession = {
-      player: {
-        id: 'guest',
-        username: 'Guest',
-        bankroll: 1000,
-        total_hands_played: 0,
-        hands_won: 0,
-        hands_lost: 0,
-        biggest_win: 0,
-      },
-      isGuest: true,
-    };
-    localStorage.setItem('blackjack_session', JSON.stringify(guestSession));
-    router.push('/game');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-900/20 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-900/20 to-slate-950 flex items-center justify-center px-3 py-6 relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -63,7 +45,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8 md:mb-12"
         >
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
@@ -107,7 +89,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-7xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 mb-6 tracking-tight"
+            className="text-6xl sm:text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 mb-4 tracking-tight"
           >
             BLACKJACK
           </motion.h1>
@@ -116,47 +98,34 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="space-y-2"
+            className="space-y-1"
           >
-            <p className="text-2xl md:text-3xl font-semibold text-gray-200">
+            <p className="text-xl md:text-2xl font-semibold text-gray-200">
               Premium Two-Deck Casino Experience
             </p>
-            <p className="text-lg text-yellow-400/80 font-medium">
+            <p className="text-base md:text-lg text-yellow-400/80 font-medium">
               Authentic Rules • Real-Time Competition • Web3 Powered
             </p>
           </motion.div>
         </motion.div>
 
-        {/* Main action buttons */}
+        {/* Main action button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="flex flex-col sm:flex-row justify-center gap-6 mb-16"
+          className="flex justify-center mb-10 md:mb-14"
         >
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(234, 179, 8, 0.6)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(234, 179, 8, 0.7)" }}
             whileTap={{ scale: 0.95 }}
             onClick={() => router.push('/auth')}
-            className="group relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-bold text-xl py-6 px-12 rounded-xl shadow-2xl overflow-hidden"
+            className="group relative bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-bold text-lg md:text-xl py-5 px-10 md:py-6 md:px-14 rounded-3xl shadow-2xl overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 group-hover:translate-x-full transition-transform duration-1000" />
             <div className="relative flex items-center justify-center gap-3">
               <span className="text-2xl">🔐</span>
-              <span>Connect Wallet</span>
-            </div>
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(168, 85, 247, 0.4)" }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleGuestPlay}
-            className="group relative bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold text-xl py-6 px-12 rounded-xl shadow-2xl overflow-hidden border border-purple-400/30"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 group-hover:translate-x-full transition-transform duration-1000" />
-            <div className="relative flex items-center justify-center gap-3">
-              <span className="text-2xl">🎮</span>
-              <span>Play as Guest</span>
+              <span>Connect Wallet & Play</span>
             </div>
           </motion.button>
         </motion.div>
@@ -166,7 +135,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8 md:mb-10"
         >
           {[
             { icon: '🔐', title: 'Web3 Auth', desc: 'MetaMask, WalletConnect & more', color: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30' },
@@ -180,7 +149,7 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 + idx * 0.1 }}
               whileHover={{ y: -8, transition: { duration: 0.2 } }}
-              className={`bg-gradient-to-br ${feature.color} backdrop-blur-sm rounded-xl p-6 border shadow-lg hover:shadow-2xl transition-all`}
+              className={`bg-gradient-to-br ${feature.color} backdrop-blur-sm rounded-2xl p-5 md:p-6 border shadow-lg hover:shadow-2xl transition-all`}
             >
               <motion.div
                 whileHover={{ scale: 1.2, rotate: 10 }}
@@ -199,7 +168,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4 }}
-          className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-md rounded-2xl p-8 border border-gray-700/50 shadow-2xl"
+          className="bg-gradient-to-r from-gray-800/80 to-gray-900/80 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-gray-700/50 shadow-2xl"
         >
           <div className="text-center space-y-4">
             <h2 className="text-2xl font-bold text-yellow-400 mb-6">Authentic Casino Rules</h2>

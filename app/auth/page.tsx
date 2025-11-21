@@ -82,29 +82,29 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-3 py-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-md border border-gray-700"
+        className="bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 w-full max-w-md border border-gray-700"
       >
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-yellow-400 mb-2">🃏 Blackjack</h1>
-          <p className="text-gray-400">Connect your wallet to play</p>
+        <div className="text-center mb-6">
+          <h1 className="text-3xl md:text-4xl font-bold text-yellow-400 mb-2">🎰 Blackjack</h1>
+          <p className="text-gray-400 text-sm md:text-base">Connect your wallet to play</p>
         </div>
 
         {error && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded mb-4"
+            className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-2xl mb-4"
           >
             {error}
           </motion.div>
         )}
 
         {isConnected && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+          <div className="mb-5 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl">
             <p className="text-sm text-gray-400 mb-1">Connected Wallet</p>
             <p className="text-green-400 font-mono text-sm break-all">{address}</p>
           </div>
@@ -115,13 +115,13 @@ export default function AuthPage() {
           whileTap={{ scale: 0.98 }}
           onClick={isConnected ? handleAuthenticate : handleWalletConnect}
           disabled={loading}
-          className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-4 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed text-base md:text-lg"
         >
           {loading ? 'Authenticating...' : isConnected ? 'Sign Message & Play' : 'Connect Wallet'}
         </motion.button>
 
         {isConnected && (
-          <div className="mt-6 bg-blue-500/20 border border-blue-500 text-blue-400 px-4 py-3 rounded text-sm">
+          <div className="mt-5 bg-blue-500/20 border border-blue-500 text-blue-400 px-4 py-3 rounded-2xl text-sm">
             ℹ️ You'll need to sign a message to verify wallet ownership
           </div>
         )}
