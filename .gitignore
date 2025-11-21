@@ -36,6 +36,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# VS Code
+.vscode/*
+!.vscode/settings.json
+
 # sound files (download separately)
 /public/sounds/*.mp3
 /public/sounds/*.wav

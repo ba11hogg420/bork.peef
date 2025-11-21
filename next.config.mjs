@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   // Performance optimizations
   compiler: {
@@ -32,7 +32,7 @@ const nextConfig = {
   },
   // Experimental features for better performance
   experimental: {
-    optimizePackageImports: ['framer-motion', '@supabase/supabase-js'],
+    optimizePackageImports: ['framer-motion'],
   },
   // Webpack configuration to exclude optional dependencies
   webpack: (config, { isServer }) => {
