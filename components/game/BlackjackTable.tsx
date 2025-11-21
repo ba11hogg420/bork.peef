@@ -77,6 +77,7 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
     setMessage('Dealing cards...');
     
     setTimeout(() => dealCards(betAmount), 500);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState.playerBankroll]);
 
   const dealCards = useCallback((betAmount: number) => {
@@ -129,6 +130,7 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
     } else {
       setMessage('Your turn! Hit or Stand?');
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
 
   const hit = useCallback(() => {
@@ -171,6 +173,7 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
     }
 
     setGameState(newGameState);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
 
   const stand = useCallback(() => {
@@ -189,6 +192,7 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
     setMessage("Dealer's turn...");
     
     setTimeout(() => playDealerHand(), 1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
 
   const playDealerHand = useCallback(() => {
@@ -219,9 +223,10 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
     };
 
     dealerPlay();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
 
-  const finishGame = useCallback(async (finalState: GameState, forcedResult?: string) => {
+  const finishGame = useCallback(async (finalState: GameState, forcedResult?: 'win' | 'loss' | 'push' | 'blackjack' | 'bust') => {
     const dealerValue = calculateHandValue(finalState.dealerHand).value;
     const dealerBust = isBust(finalState.dealerHand);
     

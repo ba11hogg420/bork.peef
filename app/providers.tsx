@@ -6,27 +6,35 @@ import { createAppKit } from '@reown/appkit/react';
 import { WagmiProvider } from 'wagmi';
 import { wagmiAdapter, projectId, metadata, networks } from '@/lib/web3';
 
-// Create Reown AppKit modal with project branding visible
+// Create Reown AppKit modal with full features including Auth, wallet creation, and legal terms
+/* eslint-disable @typescript-eslint/no-explicit-any */
 createAppKit({
   adapters: [wagmiAdapter],
   projectId,
-  networks,
-  defaultNetwork: networks[0],
+  networks: networks as any,
+  defaultNetwork: networks[0] as any,
   metadata,
   features: {
     analytics: true,
-    email: false,
-    socials: false,
-    onramp: false
+    email: true,
+    socials: ['google', 'github', 'discord', 'x'],
+    onramp: true,
+    swaps: true,
+    allWallets: true,
+    emailShowWallets: true,
   },
+  termsConditionsUrl: 'https://reown.com/terms-of-service',
+  privacyPolicyUrl: 'https://reown.com/privacy-policy',
+  enableWalletConnect: true,
+  enableInjected: true,
+  enableEIP6963: true,
+  enableCoinbase: true,
   themeMode: 'dark',
   themeVariables: {
     '--w3m-accent': '#eab308',
     '--w3m-border-radius-master': '16px',
-    '--w3m-z-index': '9999'
+    '--w3m-z-index': 9999
   },
-  enableWalletGuide: true,
-  enableWallets: true
 });
 
 export function Web3Provider({ children }: { children: ReactNode }) {

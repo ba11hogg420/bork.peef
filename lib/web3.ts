@@ -2,8 +2,9 @@ import { cookieStorage, createStorage, http } from 'wagmi';
 import { mainnet, polygon, arbitrum, base } from 'wagmi/chains';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 
-// Get projectId from https://cloud.walletconnect.com
+// Get projectId and auth from https://cloud.reown.com
 export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || '';
+export const authApiKey = process.env.NEXT_PUBLIC_REOWN_AUTH_API_KEY || 'e288da6f-58b7-4c0d-ac3c-3847cd3d04f7';
 
 if (!projectId) {
   console.warn('WalletConnect Project ID is not set. Please add NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID to your .env.local');
