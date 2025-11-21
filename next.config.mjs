@@ -44,8 +44,22 @@ const nextConfig = {
         tls: false,
       };
     }
-    // Ignore optional pino-pretty dependency
-    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    // Ignore optional dependencies and React Native modules
+    config.externals.push(
+      'pino-pretty',
+      'lokijs',
+      'encoding',
+      '@react-native-async-storage/async-storage',
+      'react-native',
+      'react-native-get-random-values'
+    );
+    
+    // Ignore all node_modules warnings for missing dependencies
+    config.ignoreWarnings = [
+      { module: /node_modules/ },
+      /Critical dependency: the request of a dependency is an expression/
+    ];
+    
     return config;
   },
   // Comprehensive security headers

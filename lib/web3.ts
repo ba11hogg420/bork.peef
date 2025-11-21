@@ -19,14 +19,48 @@ export const metadata = {
 // Define supported networks
 export const networks = [mainnet, polygon, arbitrum, base];
 
-// Create Wagmi adapter (Reown AppKit)
+// Create Wagmi adapter (Reown AppKit) with optimized transport settings
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
     storage: cookieStorage
   }),
   ssr: true,
   projectId,
-  networks
+  networks,
+  transports: {
+    [mainnet.id]: http(undefined, {
+      batch: {
+        wait: 50
+      },
+      retryCount: 3,
+      retryDelay: 150,
+      timeout: 10_000
+    }),
+    [polygon.id]: http(undefined, {
+      batch: {
+        wait: 50
+      },
+      retryCount: 3,
+      retryDelay: 150,
+      timeout: 10_000
+    }),
+    [arbitrum.id]: http(undefined, {
+      batch: {
+        wait: 50
+      },
+      retryCount: 3,
+      retryDelay: 150,
+      timeout: 10_000
+    }),
+    [base.id]: http(undefined, {
+      batch: {
+        wait: 50
+      },
+      retryCount: 3,
+      retryDelay: 150,
+      timeout: 10_000
+    })
+  }
 });
 
 export const config = wagmiAdapter.wagmiConfig;

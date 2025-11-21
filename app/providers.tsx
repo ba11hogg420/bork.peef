@@ -35,13 +35,18 @@ export function Web3Provider({ children }: { children: ReactNode }) {
     defaultOptions: {
       queries: {
         refetchOnWindowFocus: false,
+        retry: 2,
+        staleTime: 30000, // 30 seconds
+        gcTime: 5 * 60 * 1000 // 5 minutes
+      },
+      mutations: {
         retry: 1
       }
     }
   }));
 
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig} reconnectOnMount={true}>
       <QueryClientProvider client={queryClient}>
         {children}
       </QueryClientProvider>
