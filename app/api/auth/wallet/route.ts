@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { verifyMessage } from 'viem';
+import { getPlayerByWallet, createPlayer } from '@/lib/db';
 
 // Simple in-memory rate limiter (use durable store like Redis in production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -83,11 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if player exists
-    const { data: existingPlayer } = await supabaseAdmin
-      .from('players')
-      .select('*')
-      .eq('wallet_address', walletAddress.toLowerCase())
-      .single();
+    const existingPlayer = await getPlayerByWallet(walletAddress);
 
     if (existingPlayer) {
       // Player exists, return their data
@@ -100,53 +96,23 @@ export async function POST(request: NextRequest) {
     // Auto-generate username from wallet address (first 4 and last 4 chars)
     const username = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
 
-    // Create auth user with wallet address as email (workaround for Supabase auth)
-    const fakeEmail = `${walletAddress.toLowerCase()}@wallet.blackjack`;
-    const randomPassword = crypto.randomUUID();
+    // Create player profile with generated user ID
+    const userId = crypto.randomUUID();
+    
+    try {
+      const playerData = await createPlayer(userId, walletAddress, username);
 
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: fakeEmail,
-      password: randomPassword,
-      email_confirm: true,
-    });
-
-    if (authError || !authData.user) {
-      console.error('Auth creation error:', authError);
-      return NextResponse.json(
-        { error: 'Failed to create authentication' },
-        { status: 500 }
-      );
-    }
-
-    // Create player profile
-    const { data: playerData, error: playerError } = await supabaseAdmin
-      .from('players')
-      .insert({
-        user_id: authData.user.id,
-        wallet_address: walletAddress.toLowerCase(),
-        username,
-        bankroll: 1000,
-        total_hands_played: 0,
-        hands_won: 0,
-        hands_lost: 0,
-        biggest_win: 0,
-      })
-      .select()
-      .single();
-
-    if (playerError) {
-      // Cleanup on failure
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      return NextResponse.json({
+        player: playerData,
+        isNewUser: true,
+      });
+    } catch (error) {
+      console.error('Player creation error:', error);
       return NextResponse.json(
         { error: 'Failed to create player profile' },
         { status: 500 }
       );
     }
-
-    return NextResponse.json({
-      player: playerData,
-      isNewUser: true,
-    });
 
   } catch (error) {
     console.error('Wallet auth error:', error);

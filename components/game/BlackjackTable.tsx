@@ -24,7 +24,6 @@ import {
 } from '@/lib/gameLogic';
 import { soundManager } from '@/lib/soundManager';
 import { saveGameState, loadGameState, clearGameState } from '@/lib/localStorage';
-import { supabase } from '@/lib/supabase';
 
 interface BlackjackTableProps {
   player: Player;
@@ -279,16 +278,18 @@ export default function BlackjackTable({ player, onBankrollUpdate }: BlackjackTa
 
     // Update database
     try {
-      await supabase
-        .from('players')
-        .update({
+      await fetch('/api/player/update-stats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: player.id,
           bankroll: newBankroll,
-          total_hands_played: player.total_hands_played + 1,
-          hands_won: netWin > 0 ? player.hands_won + 1 : player.hands_won,
-          hands_lost: netWin < 0 ? player.hands_lost + 1 : player.hands_lost,
-          biggest_win: Math.max(player.biggest_win, netWin),
-        })
-        .eq('id', player.id);
+          totalHandsPlayed: player.total_hands_played + 1,
+          handsWon: netWin > 0 ? player.hands_won + 1 : player.hands_won,
+          handsLost: netWin < 0 ? player.hands_lost + 1 : player.hands_lost,
+          biggestWin: Math.max(player.biggest_win, netWin),
+        }),
+      });
 
       onBankrollUpdate(newBankroll);
     } catch (error) {

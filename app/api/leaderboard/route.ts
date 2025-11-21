@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getLeaderboard } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,26 +9,7 @@ export async function GET(request: NextRequest) {
       ? Math.min(Math.max(Math.floor(requestedLimit), 5), 50)
       : 10;
 
-    const { data, error } = await supabaseAdmin
-      .from('players')
-      .select('id, username, bankroll, total_hands_played, hands_won, hands_lost, biggest_win')
-      .order('bankroll', { ascending: false })
-      .limit(limit);
-
-    if (error) {
-      console.error('Leaderboard query error:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch leaderboard' },
-        { status: 500 }
-      );
-    }
-
-    const leaderboard = (data ?? []).map((player) => ({
-      ...player,
-      win_rate: player.total_hands_played > 0
-        ? (player.hands_won / player.total_hands_played) * 100
-        : 0,
-    }));
+    const leaderboard = await getLeaderboard(limit);
 
     return NextResponse.json({ leaderboard });
   } catch (error) {
