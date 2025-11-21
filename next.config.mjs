@@ -34,6 +34,20 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', '@supabase/supabase-js'],
   },
+  // Webpack configuration to exclude optional dependencies
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      };
+    }
+    // Ignore optional pino-pretty dependency
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    return config;
+  },
   // Comprehensive security headers
   async headers() {
     return [
