@@ -94,7 +94,7 @@ export function canSplit(hand: Card[], bankroll: number, currentBet: number): bo
 
 // Check if dealer should hit (hits on 16 or less, stands on soft 17)
 export function dealerShouldHit(hand: Card[]): boolean {
-  const { value, isSoft } = calculateHandValue(hand);
+  const { value } = calculateHandValue(hand);
   
   // Dealer stands on soft 17 or higher
   if (value >= 17) {

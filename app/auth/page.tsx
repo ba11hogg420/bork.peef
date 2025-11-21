@@ -74,9 +74,10 @@ export default function AuthPage() {
 
       // Redirect to game
       router.push('/game');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Auth error:', err);
-      setError(err.message || 'Authentication failed');
+      const errorMessage = err instanceof Error ? err.message : 'Authentication failed';
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -122,7 +123,7 @@ export default function AuthPage() {
 
         {isConnected && (
           <div className="mt-5 bg-blue-500/20 border border-blue-500 text-blue-400 px-4 py-3 rounded-2xl text-sm">
-            ℹ️ You'll need to sign a message to verify wallet ownership
+            ℹ️ You&apos;ll need to sign a message to verify wallet ownership
           </div>
         )}
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Card from './Card';
 import ChipSelector from './ChipSelector';
-import type { Card as CardType, GameState, Player } from '@/lib/types';
+import type { GameState, Player } from '@/lib/types';
 import {
   createTwoDecks,
   dealInitialCards,
