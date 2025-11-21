@@ -27,7 +27,7 @@ function checkRateLimit(ip: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const { walletAddress, signature, message, username, timestamp, nonce } = await request.json();
+    const { walletAddress, signature, message, timestamp, nonce } = await request.json();
 
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     if (!checkRateLimit(ip)) {
@@ -97,34 +97,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // New player - validate username
-    if (!username || username.length < 3 || username.length > 30) {
-      return NextResponse.json(
-        { error: 'Username must be between 3 and 30 characters' },
-        { status: 400 }
-      );
-    }
-
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      return NextResponse.json(
-        { error: 'Username can only contain letters, numbers, and underscores' },
-        { status: 400 }
-      );
-    }
-
-    // Check if username is taken
-    const { data: usernameCheck } = await supabaseAdmin
-      .from('players')
-      .select('username')
-      .eq('username', username)
-      .single();
-
-    if (usernameCheck) {
-      return NextResponse.json(
-        { error: 'Username already taken' },
-        { status: 400 }
-      );
-    }
+    // Auto-generate username from wallet address (first 4 and last 4 chars)
+    const username = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
 
     // Create auth user with wallet address as email (workaround for Supabase auth)
     const fakeEmail = `${walletAddress.toLowerCase()}@wallet.blackjack`;

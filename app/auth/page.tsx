@@ -12,10 +12,8 @@ export default function AuthPage() {
   const { open } = useAppKit();
   const { signMessageAsync } = useSignMessage();
   
-  const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showUsernameInput, setShowUsernameInput] = useState(false);
 
   const handleWalletConnect = async () => {
     if (!isConnected) {
@@ -56,19 +54,12 @@ export default function AuthPage() {
           message,
           timestamp,
           nonce,
-          username: username || undefined,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        if (response.status === 400 && data.error?.includes('Username')) {
-          // New user needs to provide username
-          setShowUsernameInput(true);
-          setLoading(false);
-          return;
-        }
         setError(data.error || 'Authentication failed');
         setLoading(false);
         return;
@@ -119,41 +110,17 @@ export default function AuthPage() {
           </div>
         )}
 
-        {showUsernameInput && isConnected && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="mb-4"
-          >
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
-              Choose a Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              minLength={3}
-              maxLength={30}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-yellow-400"
-              placeholder="Enter username (3-30 characters)"
-            />
-            <p className="text-xs text-gray-500 mt-1">This will be your display name on the leaderboard</p>
-          </motion.div>
-        )}
-
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={isConnected ? handleAuthenticate : handleWalletConnect}
-          disabled={loading || (showUsernameInput && username.length < 3)}
+          disabled={loading}
           className="w-full py-3 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Authenticating...' : isConnected ? (showUsernameInput ? 'Create Account' : 'Sign Message & Play') : 'Connect Wallet'}
+          {loading ? 'Authenticating...' : isConnected ? 'Sign Message & Play' : 'Connect Wallet'}
         </motion.button>
 
-        {isConnected && !showUsernameInput && (
+        {isConnected && (
           <div className="mt-6 bg-blue-500/20 border border-blue-500 text-blue-400 px-4 py-3 rounded text-sm">
             ℹ️ You'll need to sign a message to verify wallet ownership
           </div>

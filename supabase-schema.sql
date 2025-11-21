@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS players (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     wallet_address TEXT UNIQUE NOT NULL,
-    username TEXT UNIQUE NOT NULL,
+    username TEXT UNIQUE, -- Auto-generated from wallet address, nullable for backwards compatibility
     bankroll DECIMAL(10, 2) DEFAULT 1000.00 NOT NULL CHECK (bankroll >= 0),
     total_hands_played INTEGER DEFAULT 0 CHECK (total_hands_played >= 0),
     hands_won INTEGER DEFAULT 0 CHECK (hands_won >= 0),

@@ -43,7 +43,7 @@ export default function Leaderboard({ entries, isLoading }: LeaderboardProps) {
                       {index + 1}
                     </div>
                     <div>
-                      <div className="font-semibold text-white">{entry.username}</div>
+                      <div className="font-semibold text-white font-mono">{entry.username}</div>
                       <div className="text-xs text-gray-400">
                         {entry.total_hands_played} hands • {entry.win_rate.toFixed(1)}% win rate
                       </div>
